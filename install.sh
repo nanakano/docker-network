@@ -1,5 +1,8 @@
 #!/bin/sh
 
+sudo apt update
+sudo apt install -y python3-pip
+
 # docker install
 sudo apt update
 sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common

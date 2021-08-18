@@ -1,0 +1,8 @@
+node : {
+ R1: {
+   images: ubuntu2004
+ },
+ R2: {
+   images: ubuntu2004
+ }
+}
