@@ -1,8 +1,9 @@
-node : {
- R1: {
-   images: ubuntu2004
- },
- R2: {
-   images: ubuntu2004
- }
-}
+node : 
+  - name: R1 
+    images: ubuntu2004
+    interface:
+     - { name: eth0, type: direct, peer: R2-eth0 }
+  - name: R2 
+    images: ubuntu2004
+    interface:
+      - { name: eth0, type: direct, peer: R1-eth0 }
