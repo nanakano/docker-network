@@ -2,7 +2,7 @@ node :
   - name: R1 
     images: ubuntu2004
     interface:
-     - { name: eth0, type: direct, peer: R2-eth0 }
+      - { name: eth0, type: direct, peer: R2-eth0 }
   - name: R2 
     images: ubuntu2004
     interface:
@@ -16,13 +16,13 @@ node :
 node_config:
   - name: R1 
     config:
-     - { cmd : ip addr add 10.0.0.1/24 dev eth0 }
-     - { cmd : ip route add 10.0.1.0/24 via 10.0.0.2 }
+      - { cmd : ip addr add 10.0.0.1/24 dev eth0 }
+      - { cmd : ip route add 10.0.1.0/24 via 10.0.0.2 }
   - name: R2
     config:
-     - { cmd : ip addr add 10.0.0.2/24 dev eth0 }
-     - { cmd : ip addr add 10.0.1.1/24 dev eth1 }
+      - { cmd : ip addr add 10.0.0.2/24 dev eth0 }
+      - { cmd : ip addr add 10.0.1.2/24 dev eth1 }
   - name: R3
     config:
-     - { cmd : ip addr add 10.0.1.2/24 dev eth0 }
-     - { cmd : ip route add 10.0.0.0/24 via 10.0.1.1 }
+      - { cmd : ip addr add 10.0.1.1/24 dev eth0 }
+      - { cmd : ip route add 10.0.0.0/24 via 10.0.1.2 }

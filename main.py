@@ -20,7 +20,7 @@ def main():
       dockerNetworkPs()
 
 def yamlLoad():
-  with open('config.yaml') as yml:
+  with open(sys.argv[2]) as yml:
     config = yaml.load(yml, Loader=yaml.SafeLoader)
   print(config['node'])
   return config
