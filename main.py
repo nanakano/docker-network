@@ -31,7 +31,7 @@ def dockerNetworkUp(config):
     cmd = 'docker run --privileged --name ' + str(config['node'][node_num]['name']) + ' --net none -dt ' + str(config['node'][node_num]['images'])
     res = subprocess.check_call(cmd.split())
     print(res)
-    dockerInterfaceAttach(str(config['node'][node_num]['name']), config['node'][node_num]['interface'][0])
+    dockerInterfaceAttach(str(config['node'][node_num]['name']), config['node'][node_num]['interface'])
     """
     print()
     print(config['node'][node_num]['interface'])
@@ -65,39 +65,40 @@ def dockerNetworkPs():
   res = subprocess.check_output(cmd.split()).decode('utf-8')
   print (res)
 
-def dockerInterfaceAttach(node_name, node_intarface):
+def dockerInterfaceAttach(node_name, node_interface):
   node_id = nodeIdGet(node_name, 'up')
 
-  #ip link add name R1-eth0 type veth peer name R2-eth0
-  cmd = (['ip', 'addr', 'show', node_name + '-' + node_intarface['name']])
-  try:
+  for interface_num in range(len(node_interface)):
+    #ip link add name R1-eth0 type veth peer name R2-eth0
+    cmd = (['ip', 'addr', 'show', node_name + '-' + node_interface[interface_num]['name']])
+    try:
+      res = subprocess.check_output(cmd).decode('utf-8')
+      print(cmd)
+      print(res)
+    except subprocess.CalledProcessError as err:
+      #print(e)
+      cmd = (['ip', 'link', 'add', 'name', node_name + '-' + node_interface[interface_num]['name'], 'type', 'veth', 'peer', 'name', node_interface[interface_num]['peer']])
+      res = subprocess.check_output(cmd).decode('utf-8')
+      print(cmd)
+      print(res)
+
+    #sudo ip link set veth-guest netns d1cf4f603a37
+    cmd = (['ip', 'link', 'set', node_name + '-' + node_interface[interface_num]['name'], 'netns', node_id])
     res = subprocess.check_output(cmd).decode('utf-8')
     print(cmd)
     print(res)
-  except subprocess.CalledProcessError as err:
-    #print(e)
-    cmd = (['ip', 'link', 'add', 'name', node_name + '-' + node_intarface['name'], 'type', 'veth', 'peer', 'name', node_intarface['peer']])
+
+    #sudo ip netns exec d1cf4f603a37 ip link set veth-host name eth1
+    cmd = (['ip', 'netns', 'exec', node_id, 'ip', 'link', 'set', node_name + '-' + node_interface[interface_num]['name'], 'name', node_interface[interface_num]['name']])
     res = subprocess.check_output(cmd).decode('utf-8')
     print(cmd)
     print(res)
 
-  #sudo ip link set veth-guest netns d1cf4f603a37
-  cmd = (['ip', 'link', 'set', node_name + '-' + node_intarface['name'], 'netns', node_id])
-  res = subprocess.check_output(cmd).decode('utf-8')
-  print(cmd)
-  print(res)
-
-  #sudo ip netns exec d1cf4f603a37 ip link set veth-host name eth1
-  cmd = (['ip', 'netns', 'exec', node_id, 'ip', 'link', 'set', node_name + '-' + node_intarface['name'], 'name', node_intarface['name']])
-  res = subprocess.check_output(cmd).decode('utf-8')
-  print(cmd)
-  print(res)
-
-  #sudo ip netns exec d1cf4f603a37 ip link set eth1 up
-  cmd = (['ip', 'netns', 'exec', node_id, 'ip', 'link', 'set', node_intarface['name'], 'up'])
-  res = subprocess.check_output(cmd).decode('utf-8')
-  print(cmd)
-  print(res)
+    #sudo ip netns exec d1cf4f603a37 ip link set eth1 up
+    cmd = (['ip', 'netns', 'exec', node_id, 'ip', 'link', 'set', node_interface[interface_num]['name'], 'up'])
+    res = subprocess.check_output(cmd).decode('utf-8')
+    print(cmd)
+    print(res)
     
 def nodeIdGet(node_name, info):
   cmd = (['docker', 'inspect', node_name, '--format', '{{ .NetworkSettings.SandboxKey }}'])
