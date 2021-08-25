@@ -11,6 +11,7 @@ def main():
   if 'up' == sys.argv[1] :
       print('up')
       dockerNetworkUp(config)
+      dockerConfig(config)
   elif 'down' == sys.argv[1] :
       print('down')
       dockerNetworkDown(config)
@@ -110,6 +111,13 @@ def nodeIdGet(node_name, info):
   print(cmd)
   return node_id
 
+def dockerConfig(config):
+  # docker exec R1 ip addr add 10.0.0.1/24 dev eth0
+  for node_num in range(len(config['node_config'])):
+    for config_num in range(len(config['node_config'][node_num]['config'])):
+      cmd = 'docker exec -it ' +  str(config['node_config'][node_num]['name']) + ' ' + str(config['node_config'][node_num]['config'][config_num]['cmd'])
+      res = subprocess.check_call(cmd.split())
+      print(cmd)
 """
 #sudo ip netns exec d1cf4f603a37 ip addr add 10.0.0.1/24 dev eth1
 #sudo ip netns exec 3c2d82e44e0c ip addr add 10.0.0.2/24 dev eth1
