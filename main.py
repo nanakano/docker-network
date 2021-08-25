@@ -32,13 +32,6 @@ def dockerNetworkUp(config):
     res = subprocess.check_call(cmd.split())
     print(res)
     dockerInterfaceAttach(str(config['node'][node_num]['name']), config['node'][node_num]['interface'])
-    """
-    print()
-    print(config['node'][node_num]['interface'])
-    print(config['node'][node_num]['interface'][0]['name'])
-    print(config['node'][node_num]['interface'][0]['type'])
-    print(config['node'][node_num]['interface'][0]['peer'])
-    """
 
 def dockerNetworkDown(config):
   for node_num in range(len(config['node'])):
@@ -119,13 +112,6 @@ def dockerConfig(config):
       cmd = 'docker exec -it ' +  str(config['node_config'][node_num]['name']) + ' ' + str(config['node_config'][node_num]['config'][config_num]['cmd'])
       res = subprocess.check_call(cmd.split())
       print(cmd)
-"""
-#sudo ip netns exec d1cf4f603a37 ip addr add 10.0.0.1/24 dev eth1
-#sudo ip netns exec 3c2d82e44e0c ip addr add 10.0.0.2/24 dev eth1
-
-# docker exec -it R1 ip addr add 10.0.0.1/24 dev eth0
-# docker exec -it R2 ip addr add 10.0.0.2/24 dev eth0
-"""
 
 if __name__ == '__main__':
   main()
