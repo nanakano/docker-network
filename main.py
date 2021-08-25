@@ -14,7 +14,7 @@ def main():
   if 'up' == sys.argv[1] :
       print('up')
       dockerNetworkUp(config)
-      dockerConfig(config)
+#      dockerConfig(config)
   elif 'down' == sys.argv[1] :
       print('down')
       dockerNetworkDown(config)
@@ -71,33 +71,33 @@ def dockerInterfaceAttach(node_name, node_interface):
       #ip link add name R1-eth0 type veth peer name R2-eth0
       cmd = (['ip', 'addr', 'show', node_name + '-' + node_interface[interface_num]['name']])
       try:
-        res = subprocess.check_output(cmd).decode('utf-8')
+        #res = subprocess.check_output(cmd).decode('utf-8')
         print(cmd)
-        print(res)
+#        print(res)
       except subprocess.CalledProcessError as err:
         #print(e)
         cmd = (['ip', 'link', 'add', 'name', node_name + '-' + node_interface[interface_num]['name'], 'type', 'veth', 'peer', 'name', node_interface[interface_num]['peer']])
-        res = subprocess.check_output(cmd).decode('utf-8')
+        #res = subprocess.check_output(cmd).decode('utf-8')
         print(cmd)
-        print(res)
+#        print(res)
 
       #sudo ip link set veth-guest netns d1cf4f603a37
       cmd = (['ip', 'link', 'set', node_name + '-' + node_interface[interface_num]['name'], 'netns', node_id])
-      res = subprocess.check_output(cmd).decode('utf-8')
+      #res = subprocess.check_output(cmd).decode('utf-8')
       print(cmd)
-      print(res)
+#      print(res)
 
       #sudo ip netns exec d1cf4f603a37 ip link set veth-host name eth1
       cmd = (['ip', 'netns', 'exec', node_id, 'ip', 'link', 'set', node_name + '-' + node_interface[interface_num]['name'], 'name', node_interface[interface_num]['name']])
-      res = subprocess.check_output(cmd).decode('utf-8')
+      #res = subprocess.check_output(cmd).decode('utf-8')
       print(cmd)
-      print(res)
+#      print(res)
 
       #sudo ip netns exec d1cf4f603a37 ip link set eth1 up
       cmd = (['ip', 'netns', 'exec', node_id, 'ip', 'link', 'set', node_interface[interface_num]['name'], 'up'])
-      res = subprocess.check_output(cmd).decode('utf-8')
+      #res = subprocess.check_output(cmd).decode('utf-8')
       print(cmd)
-      print(res)
+#      print(res)
 
     # Bridge Connet
     if 'bredge' == str(node_interface[interface_num]['type']):
