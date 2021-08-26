@@ -2,15 +2,15 @@ node :
   - name: R1 
     images: ubuntu2004
     interface:
-      - { name: eth0, type: bridge, bredge_name: br0, peer: R1-eth0 }
+      - { name: eth0, type: bridge, bridge_name: br0, peer: R1-eth0 }
   - name: R2 
     images: ubuntu2004
     interface:
-      - { name: eth0, type: bridge, bredge_name: br0, peer: R2-eth0 }
+      - { name: eth0, type: bridge, bridge_name: br0, peer: R2-eth0 }
   - name: R3 
     images: ubuntu2004
     interface:
-      - { name: eth0, type: bridge, bredge_name: br0, peer: R3-eth0 }
+      - { name: eth0, type: bridge, bridge_name: br0, peer: R3-eth0 }
 
 node_config:
   - name: R1 
