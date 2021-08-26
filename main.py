@@ -14,7 +14,7 @@ def main():
   if 'up' == sys.argv[1] :
       print('up')
       dockerNetworkUp(config)
-#      dockerConfig(config)
+      dockerConfig(config)
   elif 'down' == sys.argv[1] :
       print('down')
       dockerNetworkDown(config)
@@ -121,6 +121,8 @@ def dockerInterfaceAttach(node_name, node_interface):
       res = subprocess.check_output(cmd).decode('utf-8')
       print(cmd)
       print(res)
+
+      nodeVeth(node_name, node_interface, interface_num, node_id)
 
 def nodeIdGet(node_name, info):
   cmd = (['docker', 'inspect', node_name, '--format', '{{ .NetworkSettings.SandboxKey }}'])
