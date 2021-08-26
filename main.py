@@ -38,6 +38,7 @@ def dockerNetworkUp(config):
 
 def dockerNetworkDown(config):
   for node_num in range(len(config['node'])):
+    node_interface = config['node'][node_num]['interface']
     print(config['node'][node_num]['name'])
     node_id = nodeIdGet(str(config['node'][node_num]['name']), 'down')
     # netns delete
@@ -55,6 +56,24 @@ def dockerNetworkDown(config):
     cmd = 'docker rm ' + str(config['node'][node_num]['name'])
     res = subprocess.check_call(cmd.split())
     print(res)
+
+    # bridge delete
+    for interface_num in range(len(node_interface)):
+      if 'bridge' == str(node_interface[interface_num]['type']):
+        cmd = (['ip', 'link', 'show', node_interface[interface_num]['bridge_name']])
+        try:
+          print('aaa')
+          res = subprocess.check_output(cmd).decode('utf-8')
+          print(cmd)
+          print(res)
+
+          # ovs-vsctl add-del br0
+          cmd = (['ovs-vsctl', 'del-br', node_interface[interface_num]['bridge_name']])
+          res = subprocess.check_output(cmd).decode('utf-8')
+          print(cmd)
+          print(res)
+        except subprocess.CalledProcessError as err:
+          print(err)
 
 def dockerNetworkPs():
   cmd = 'docker ps'
