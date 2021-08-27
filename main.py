@@ -14,7 +14,10 @@ def main():
   if 'up' == sys.argv[1] :
       print('up')
       dockerNetworkUp(config)
-      dockerConfig(config)
+      try:
+        dockerConfig(config)
+      except KeyError as err:
+        print(err)
   elif 'down' == sys.argv[1] :
       print('down')
       dockerNetworkDown(config)
@@ -30,11 +33,14 @@ def yamlLoad():
 
 def dockerNetworkUp(config):
   for node_num in range(len(config['node'])):
+    dockerBuild(str(config['node'][node_num]['image']))
+'''
     # docker run --name R1 --net none -dt ubuntu2004
     cmd = 'docker run --privileged --name ' + str(config['node'][node_num]['name']) + ' --net none -dt ' + str(config['node'][node_num]['images'])
     res = subprocess.check_call(cmd.split())
     print(res)
     dockerInterfaceAttach(str(config['node'][node_num]['name']), config['node'][node_num]['interface'])
+'''
 
 def dockerNetworkDown(config):
   for node_num in range(len(config['node'])):
@@ -51,11 +57,14 @@ def dockerNetworkDown(config):
 
     # docker stop R1
     cmd = 'docker stop ' + str(config['node'][node_num]['name'])
-    res = subprocess.check_call(cmd.split())
-    print(res)
-    cmd = 'docker rm ' + str(config['node'][node_num]['name'])
-    res = subprocess.check_call(cmd.split())
-    print(res)
+    try:
+      res = subprocess.check_call(cmd.split())
+      print(res)
+      cmd = 'docker rm ' + str(config['node'][node_num]['name'])
+      res = subprocess.check_call(cmd.split())
+      print(res)
+    except subprocess.CalledProcessError as err:
+      print(err)
 
     # bridge delete
     for interface_num in range(len(node_interface)):
@@ -145,14 +154,19 @@ def dockerInterfaceAttach(node_name, node_interface):
 
 def nodeIdGet(node_name, info):
   cmd = (['docker', 'inspect', node_name, '--format', '{{ .NetworkSettings.SandboxKey }}'])
-  directory = subprocess.check_output(cmd).decode('utf-8').replace( '\n' , '' )
-  print(directory)
-  node_id = directory.split('/')
-  node_id = node_id[-1]
-  if info == 'up':
-    cmd = 'ln' + ' -sv ' + directory + ' /var/run/netns/' + node_id
-    res = subprocess.check_output(cmd.split()).decode('utf-8')
-  print(cmd)
+  node_id = ''
+  try:
+    directory = subprocess.check_output(cmd).decode('utf-8').replace( '\n' , '' )
+    print(directory)
+    node_id = directory.split('/')
+    node_id = node_id[-1]
+    if info == 'up':
+      print('node id get')
+      cmd = 'ln' + ' -sv ' + directory + ' /var/run/netns/' + node_id
+      res = subprocess.check_output(cmd.split()).decode('utf-8')
+      print(cmd)
+  except subprocess.CalledProcessError as err:
+    print(err)
   return node_id
 
 def nodeVeth(node_name, node_interface, interface_num, node_id):
@@ -179,11 +193,25 @@ def dockerConfig(config):
   for node_num in range(len(config['node_config'])):
     for config_num in range(len(config['node_config'][node_num]['config'])):
       cmd = 'docker exec -it ' +  str(config['node_config'][node_num]['name']) + ' ' + str(config['node_config'][node_num]['config'][config_num]['cmd'])
-      res = subprocess.check_call(cmd.split())
-      print(cmd)
+      try:
+        res = subprocess.check_call(cmd.split())
+        print(cmd)
+        print(res)
+      except subprocess.CalledProcessError as err:
+        print(err)
 
-def dockerBuild(config):
+def dockerBuild(image_name):
+  print()
+  print()
+  print()
   print('build')
+  #docker images
+  cmd = (['docker', 'images'])
+  res = subprocess.check_output(cmd).decode('utf-8')
+  print(image_name in res.split())
+  print()
+  print()
+  print()
 
 if __name__ == '__main__':
   main()

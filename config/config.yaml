@@ -1,15 +1,15 @@
 node : 
   - name: R1 
-    images: ubuntu2004
+    image: ubuntu2004
     interface:
       - { name: eth0, type: direct, peer: R2-eth0 }
   - name: R2 
-    images: ubuntu2004
+    image: ubuntu2004
     interface:
       - { name: eth0, type: direct, peer: R1-eth0 }
       - { name: eth1, type: direct, peer: R3-eth0 }
   - name: R3 
-    images: ubuntu2004
+    image: ubuntu2004
     interface:
       - { name: eth0, type: direct, peer: R2-eth1 }
 
