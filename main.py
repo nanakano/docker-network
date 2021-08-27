@@ -201,17 +201,14 @@ def dockerConfig(config):
         print(err)
 
 def dockerBuild(image_name):
-  print()
-  print()
-  print()
   print('build')
-  #docker images
+  ## docker images
   cmd = (['docker', 'images'])
   res = subprocess.check_output(cmd).decode('utf-8')
-  print(image_name in res.split())
-  print()
-  print()
-  print()
+  if image_name not in res.split():
+    print('not image')
+    # build directory path get
+    # docker build -t ubuntu2004 dockerfiles/ubuntu2004
 
 if __name__ == '__main__':
   main()
